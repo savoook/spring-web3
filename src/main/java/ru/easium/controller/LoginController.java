@@ -45,6 +45,6 @@ public class LoginController {
         sc.setAuthentication(auth);
         HttpSession session = request.getSession(true);
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
-        return "redirect:/course/add";
+        return "redirect:/courses";
     }
 }
