@@ -1,24 +1,23 @@
 package ru.easium.controller;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.easium.MyUserPrincipal;
 import ru.easium.domain.Course;
-import ru.easium.domain.Teacher;
 import ru.easium.repository.CourseRepository;
 import ru.easium.service.CourseService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class CourseController {
+
+    private static final Logger logger = Logger.getLogger(CourseController.class);
 
     @Autowired
     CourseService service;
@@ -29,10 +28,11 @@ public class CourseController {
     public String allCourses(@RequestParam(defaultValue = "0") Integer pageNo,
                              @RequestParam(defaultValue = "5") Integer pageSize,
                              Model model) {
+//        if (logger.isInfo
         Long total = repository.count();
         List<Course> courses = service.getPage(pageNo, pageSize);
         model.addAttribute("courses", courses);
-        MyUserPrincipal principal= (MyUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        MyUserPrincipal principal = (MyUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         model.addAttribute("user", principal.getUsername());
         int size = (int) Math.ceil((double) total / 5);
         model.addAttribute("pages", new Integer[size]);
