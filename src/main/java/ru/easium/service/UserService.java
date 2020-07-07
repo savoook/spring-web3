@@ -5,13 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.easium.domain.Course;
+import ru.easium.domain.Authority;
 import ru.easium.domain.User;
-import ru.easium.domain.Teacher;
+import ru.easium.repository.AuthorityRepository;
 import ru.easium.repository.UserRepository;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -21,6 +20,8 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
+    private AuthorityRepository authorityRepository;
+
     public User findUser(long id) {
         return repository.findById(id).get();
     }
@@ -29,9 +30,11 @@ public class UserService {
         return StreamSupport.stream(repository.findAll().spliterator(), false).collect(Collectors.toList());
     }
 
-    public User saveUser(User user) {
-        return repository.save(user);
+    public void saveUser(User user, Authority authority) {
+        repository.save(user);
+        authorityRepository.save(authority);
     }
+
     public User findUserByUserName(String userName) {
         return repository.findByUsername(userName);
 
