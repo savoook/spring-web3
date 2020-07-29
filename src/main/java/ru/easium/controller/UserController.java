@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.easium.MyUserPrincipal;
 import ru.easium.domain.Authority;
 import ru.easium.domain.User;
+import ru.easium.repository.AuthorityRepository;
 import ru.easium.repository.UserRepository;
 import ru.easium.service.UserService;
 
@@ -27,37 +28,38 @@ public class UserController {
     UserRepository repository;
     @Autowired
     BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    AuthorityRepository authorityRepository;
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public String allUsers(@RequestParam(defaultValue = "0") Integer pageNo,
                            @RequestParam(defaultValue = "5") Integer pageSize,
                            Model model) {
         if (logger.isInfoEnabled()) {
-            logger.info("Page number=" + pageNo + "page size=" + pageSize);
+            logger.info("Page number = " + pageNo + " page size = " + pageSize);
         }
         Long total = repository.count();
         List<User> users = service.getPage(pageNo, pageSize);
         model.addAttribute("users", users);
         MyUserPrincipal principal = (MyUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         model.addAttribute("user", principal.getUsername());
-        int size = (int) Math.ceil((double) total / 5);
-        model.addAttribute("pages", new Integer[size]);
+        model.addAttribute("pages", new Integer[(int) Math.ceil((double) total / 5)]);
         return "users";
     }
 
-    @GetMapping("/user/add")
+    @GetMapping(path = "/user/add")
     public String addUser(Model model) {
+        //TODO fill model with roles from db
         return "userAdd";
     }
 
     @Secured({"ROLE_ADMIN", "ROLE_SUPER_ADMIN"})
-    @PostMapping(path = "/user/save",)
+    @PostMapping(path = "/user/save")
     public String saveUser(@RequestParam String login, @RequestParam String password, @RequestParam String confirmedPassword,
                            @RequestParam String role, @RequestParam Boolean enabled) {
         if (!password.equals(confirmedPassword)) {
             return "redirect:/user/add?confirmedError=true";
         }
-//        service.saveUser(new User(login, passwordEncoder.encode(password)));
         Authority authority = new Authority();
         authority.setAuthority(role);
         authority.setUsername(login);
@@ -68,4 +70,13 @@ public class UserController {
         service.saveUser(user, authority);
         return "redirect:/users";
     }
+
+    @PostMapping(path = "/user/delete")
+    public String deleteUser(@RequestParam String username) {
+        User user = repository.findByUsername(username);
+        Authority authority = authorityRepository.findByUsername(username);
+        service.deleteUser(user, authority);
+        return "redirect:/users";
+    }
+
 }

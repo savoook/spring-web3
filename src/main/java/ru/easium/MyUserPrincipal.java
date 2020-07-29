@@ -7,11 +7,11 @@ import ru.easium.domain.Authority;
 import ru.easium.domain.User;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MyUserPrincipal implements UserDetails {
+
     private User user;
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -21,13 +21,11 @@ public class MyUserPrincipal implements UserDetails {
 
     public MyUserPrincipal(User user, List<Authority> authorities) {
         this.user = user;
-        this.authorities = authorities.stream().map(a -> new SimpleGrantedAuthority
-                (a.getAuthority())).collect(Collectors.toList());
+        this.authorities = authorities.stream().map(a -> new SimpleGrantedAuthority(a.getAuthority())).collect(Collectors.toList());
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
         return authorities;
     }
 
@@ -58,7 +56,6 @@ public class MyUserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-//        return user.getEnabled();
         return true;
     }
 }

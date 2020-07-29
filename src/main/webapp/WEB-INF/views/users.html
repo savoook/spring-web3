@@ -9,45 +9,48 @@
 </head>
 <body>
 <div th:replace="fragments/menu :: header"/>
-<table class="table">
-    <thead>
-    <tr>
-        <th scope="col"></th>
-        <th scope="col">Логин</th>
-        <th scope="col">Активен</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user:${users}">
-        <td>
-            <input type="checkbox" aria-label="Checkbox for following text input">
-        </td>
-        <td th:text="${user.username}"></td>
-        <td>
-            <span th:if="${user.enabled==true}" th:text="#{yes}"></span>
-            <span th:unless="${user.enabled==true}" th:text="#{no}"></span>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
-        <li th:each="page, iterStat : ${pages}" class="page-item">
-            <a class="page-link" th:href="@{/users(pageNo=${iterStat.index})}" th:text="${iterStat.index+1}" a></a>
-        </li>
-    </ul>
-</nav>
-<!--<div sec:authorize="hasRole('ROLE_ADMIN')">-->
-<!--    <a class="btn btn-primary" href="/course/add" role="button">Добавить пользователя</a>-->
-<!--</div>-->
-<div style="display: flex">
-    <div>
-        <a class="btn btn-primary" href="/user/add" role="button">Добавить Пользователя</a>
+<form action="/user/delete" method="post">
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Логин</th>
+            <th scope="col">Активен</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user:${users}">
+            <td>
+                <input type="checkbox" aria-label="Checkbox for following text input" name="username"
+                       th:value="${user.username}">
+            </td>
+            <td th:text="${user.username}"></td>
+            <td>
+                <span th:if="${user.enabled==true}" th:text="#{yes}"></span>
+                <span th:unless="${user.enabled==true}" th:text="#{no}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li th:each="page, iterStat : ${pages}" class="page-item">
+                <a class="page-link" th:href="@{/users(pageNo=${iterStat.index})}" th:text="${iterStat.index+1}" a></a>
+            </li>
+        </ul>
+    </nav>
+    <!--<div sec:authorize="hasRole('ROLE_ADMIN')">-->
+    <!--    <a class="btn btn-primary" href="/course/add" role="button">Добавить пользователя</a>-->
+    <!--</div>-->
+    <div style="display: flex">
+        <div>
+            <a class="btn btn-primary" href="/user/add" role="button">Добавить Пользователя</a>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success">Удалить пользователя</button>
+        </div>
     </div>
-    <div>
-        <button type="submit" class="btn btn-success">Удалить пользователя</button>
-    </div>
-</div>
+</form>
 
 <script type="text/javascript" th:src="@{/static/js/bootstrap.bundle.js}"/>
 <script type="text/javascript" th:src="@{/static/js/bootstrap.js}"/>

@@ -3,14 +3,14 @@ package ru.easium.domain;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "authorities")
+@Table(name = "AUTHORITIES")
 public class Authority {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
-//    @Column(name = "username")
+    private Integer id;
+
     private String username;
-//    @Column(name = "authority")
     private String authority;
 
     public String getUsername() {

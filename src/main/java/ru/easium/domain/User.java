@@ -1,16 +1,16 @@
 package ru.easium.domain;
 
-import org.springframework.web.bind.annotation.Mapping;
-
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "users")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
+
     @Column(nullable = false, unique = true)
     private String username;
     private String password;
@@ -19,11 +19,6 @@ public class User {
     private Date lastLogin;
 
     public User() {
-    }
-
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
     }
 
     public String getUsername() {
